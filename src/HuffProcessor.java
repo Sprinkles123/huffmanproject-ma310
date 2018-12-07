@@ -61,13 +61,15 @@ public class HuffProcessor {
 	private void writeHeader(HuffNode root, BitOutputStream out) {
 		if (root==null) {return;}
 		if(root.myLeft !=null &&root.myRight!=null) {
-			out.writeBits(1, 1);
-			out.writeBits(BITS_PER_WORD + 1, root.myValue);
-			return;}
-		else {
 			out.writeBits(1,0);
 			writeHeader(root.myLeft, out);
 			writeHeader(root.myRight, out);
+			
+			}
+		else {
+			out.writeBits(1, 1);
+			out.writeBits(BITS_PER_WORD + 1, root.myValue);
+			return;
 		}
 		}
 		
@@ -109,12 +111,13 @@ public class HuffProcessor {
 			HuffNode right = pq.remove();
 			// create new HuffNode t with weight from
 			// left.weight+right.weight and left, right subtrees
-			HuffNode t = new HuffNode(left.myWeight,right.myWeight, left, right);
+			HuffNode t = new HuffNode(0,left.myWeight+right.myWeight, left, right);
+			//HuffNode t = new HuffNode(left.myWeight,right.myWeight, left, right);
 			pq.add(t);
 		}
-		HuffNode root = pq.remove();
-		return root;
-		//return pq.remove();
+		//HuffNode root = pq.remove();
+		//return root;
+		return pq.remove();
 	}
 	
 	private String[] makeCodingsFromTree(HuffNode root) {
@@ -133,7 +136,7 @@ public class HuffProcessor {
 		else {
 			codingHelper(root.myLeft,path+"0",encodings);
 			codingHelper(root.myRight,path+"1",encodings);
-			return;//
+			//return;//
 		}
 		
 	}
